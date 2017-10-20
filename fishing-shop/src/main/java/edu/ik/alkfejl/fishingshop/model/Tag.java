@@ -20,15 +20,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"tagName"})
+@EqualsAndHashCode(of = { "tagName" })
 public class Tag {
-	
-    @Id
-    @Column(nullable = false, unique = true)
+
+	@Id
+	@Column(nullable = false, unique = true)
 	private String tagName;
-    
-    @ManyToMany(mappedBy="tags")
-    @JsonIgnore
-    private Set<Product> products;
+
+	@ManyToMany(mappedBy = "tags")
+	@JsonIgnore
+	private Set<Product> products;
 
 }

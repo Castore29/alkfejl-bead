@@ -27,34 +27,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity {
-	
+
 	@NotEmpty
 	@Column(nullable = false)
 	private String userName;
-	
+
 	@Email
 	@NotEmpty
 	@Column(nullable = false, unique = true)
 	private String email;
-	
+
 	@NotEmpty
 	@Column(nullable = false)
 	private String password;
-	
-	private String address;
-	
-	private String phoneNumber;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-	private Set<Order> orders;
-	
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
 
-    public enum Role {
-        GUEST, USER, ADMIN
-    }
-	
+	private String address;
+
+	private String phoneNumber;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@JsonIgnore
+	private Set<Order> orders;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
+
+	public enum Role {
+		GUEST, USER, ADMIN
+	}
+
 }

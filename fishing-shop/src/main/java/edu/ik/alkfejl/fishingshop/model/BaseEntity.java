@@ -14,26 +14,26 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @MappedSuperclass
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = { "id" })
 public abstract class BaseEntity {
-	
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
-    @Version
+
+	@Version
 	private long version;
-    
-    private Date createDate;
-    
-    private boolean active;
-    
-    @PrePersist
-    void preInsert() {
-    	if (this.createDate == null) {
-    		this.createDate = new Date();
-    		this.active = true;
-    	}
-    }
+
+	private Date createDate;
+
+	private boolean active;
+
+	@PrePersist
+	void preInsert() {
+		if (this.createDate == null) {
+			this.createDate = new Date();
+			this.active = true;
+		}
+	}
 
 }

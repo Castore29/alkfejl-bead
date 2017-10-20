@@ -29,34 +29,34 @@ public class Product extends BaseEntity {
 	@NotEmpty
 	@Column(nullable = false)
 	private long itemNumber;
-	
+
 	@NotEmpty
 	@Column(nullable = false, unique = true)
 	private String productName;
-	
+
 	@NotEmpty
 	@Column(nullable = false)
 	private String description;
-	
+
 	private String producer;
-	
+
 	@Column(nullable = false)
 	private int stock;
-	
+
 	@Column(nullable = false)
 	private boolean available = true;
-	
+
 	@Column(nullable = false)
 	private int price;
-	
+
 	private int discount = 0;
-	
-	@ManyToMany(mappedBy="products")
-    @JsonIgnore
+
+	@ManyToMany(mappedBy = "products")
+	@JsonIgnore
 	private List<Order> orders;
-	
+
 	@ManyToMany
-	@JoinTable(name="PRODUCTS_TAGS")
+	@JoinTable(name = "PRODUCTS_TAGS")
 	private Set<Tag> tags;
-	
+
 }

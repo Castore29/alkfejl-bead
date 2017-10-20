@@ -6,12 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,24 +25,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Order extends BaseEntity {
-	
+
 	@Column(nullable = false)
-    private long orderNumber;
-	
+	private long orderNumber;
+
 	@ManyToOne(optional = false)
 	private User user;
-	
+
 	@ManyToMany
-	@JoinTable(name="ORDERS_PRODUCTS")
-    @JsonIgnore
+	@JoinTable(name = "ORDERS_PRODUCTS")
+	@JsonIgnore
 	private List<Product> products;
-	
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
-    
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Status status;
+
 	public enum Status {
 		RECEIVED, PROCESSED, DELIVERING, CLOSED
 	}
-	
+
 }
