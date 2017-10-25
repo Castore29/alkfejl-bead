@@ -1,5 +1,6 @@
-package edu.ik.alkfejl.fishingshop.model;
+package hu.elte.alkfejl.fishingshop.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -29,6 +30,6 @@ public class Tag {
 
 	@ManyToMany(mappedBy = "tags")
 	@JsonIgnore
-	private Set<Product> products;
+	private Set<Product> products = new HashSet<>();
 
 }
