@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class Order extends BaseEntity {
 
 	@Column(nullable = false)
-	private long orderNumber;
+	private Long orderNumber;
 
 	@ManyToOne(optional = false)
 	private User user;
