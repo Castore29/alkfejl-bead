@@ -63,7 +63,7 @@ public class ProductService {
 	public Iterable<Product> listDeleted() {
 		return productRepository.findInactive();
 	}
-	
+
 	public Iterable<Product> advancedSearch(Predicate predicate, Pageable pageable) {
 		predicate = ExpressionUtils.allOf(predicate, QProduct.product.active.eq(true));
 		return productRepository.findAll(predicate, pageable);

@@ -24,7 +24,7 @@ import hu.elte.alkfejl.fishingshop.service.ProductService;
 import static hu.elte.alkfejl.fishingshop.model.User.Role.*;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
 
 	@Autowired

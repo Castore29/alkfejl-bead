@@ -14,7 +14,7 @@ import hu.elte.alkfejl.fishingshop.service.UserService;
 import hu.elte.alkfejl.fishingshop.service.UserService.UserNotValidException;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
 	@Autowired

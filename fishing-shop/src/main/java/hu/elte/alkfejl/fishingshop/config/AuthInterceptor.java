@@ -16,31 +16,31 @@ import hu.elte.alkfejl.fishingshop.model.User;
 import hu.elte.alkfejl.fishingshop.service.UserService;
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
-	
-    @Autowired
-    private UserService userService;
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-        List<User.Role> routeRoles = getRoles((HandlerMethod) handler);
-        User user = userService.getLoggedInUser();
+		List<User.Role> routeRoles = getRoles((HandlerMethod) handler);
+		User user = userService.getLoggedInUser();
 
-        // when there are no restrictions, we let the user through
-        if (routeRoles.isEmpty() || routeRoles.contains(User.Role.GUEST)) {
-            return true;
-        }
-        // check role
-        if (userService.isLoggedIn() && routeRoles.contains(user.getRole())) {
-            return true;
-        }
-        response.setStatus(401);
-        return false;
+		// when there are no restrictions, we let the user through
+		if (routeRoles.isEmpty() || routeRoles.contains(User.Role.GUEST)) {
+			return true;
+		}
+		// check role
+		if (userService.isLoggedIn() && routeRoles.contains(user.getRole())) {
+			return true;
+		}
+		response.setStatus(401);
+		return false;
 	}
-	
-    private List<User.Role> getRoles(HandlerMethod handler) {
-        Role role = handler.getMethodAnnotation(Role.class);
-        return role == null ? Collections.emptyList() : Arrays.asList(role.value());
-    }
+
+	private List<User.Role> getRoles(HandlerMethod handler) {
+		Role role = handler.getMethodAnnotation(Role.class);
+		return role == null ? Collections.emptyList() : Arrays.asList(role.value());
+	}
 
 }

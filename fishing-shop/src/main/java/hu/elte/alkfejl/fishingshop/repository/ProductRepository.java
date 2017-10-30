@@ -31,19 +31,19 @@ public interface ProductRepository
 	Iterable<Product> findByCategory(String category);
 
 	Page<Product> findByCategoryAndSubCategory(String category, String subCategory, Pageable pageable);
-	
+
 	@Override
 	default public void customize(QuerydslBindings bindings, QProduct product) {
-		
+
 		bindings.bind(product.price).all((path, value) -> {
 			Iterator<? extends Integer> it = value.iterator();
 			return path.between(it.next(), it.next());
 		});
-		
+
 		bindings.bind(String.class).first((StringPath path, String value) -> path.containsIgnoreCase(value));
 		bindings.excluding(product.image);
 		bindings.excluding(product.orders);
-		
+
 	}
 
 }

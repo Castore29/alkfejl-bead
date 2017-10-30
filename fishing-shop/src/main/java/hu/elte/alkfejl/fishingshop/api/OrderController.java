@@ -17,7 +17,7 @@ import hu.elte.alkfejl.fishingshop.service.UserService;
 import static hu.elte.alkfejl.fishingshop.model.User.Role.*;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 public class OrderController {
 
 	@Autowired
@@ -45,6 +45,12 @@ public class OrderController {
 	@PostMapping("/add")
 	public ResponseEntity<Order> postOrder(@RequestBody Order order) {
 		order.setUser(userService.getLoggedInUser());
+		return ResponseEntity.ok(orderService.createOrUpdate(order));
+	}
+
+	@Role(ADMIN)
+	@PostMapping("/update")
+	public ResponseEntity<Order> updateOrder(@RequestBody Order order) {
 		return ResponseEntity.ok(orderService.createOrUpdate(order));
 	}
 
