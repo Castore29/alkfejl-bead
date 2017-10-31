@@ -43,7 +43,6 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
-			<version>1.4.192</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 
 		<dependency>
