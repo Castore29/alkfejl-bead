@@ -1,5 +1,6 @@
-package edu.ik.alkfejl.fishingshop.model;
+package hu.elte.alkfejl.fishingshop.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -47,7 +48,7 @@ public class User extends BaseEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	@JsonIgnore
-	private Set<Order> orders;
+	private Set<Order> orders = new HashSet<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

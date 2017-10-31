@@ -1,4 +1,4 @@
-package edu.ik.alkfejl.fishingshop.model;
+package hu.elte.alkfejl.fishingshop.model;
 
 import java.util.Date;
 
@@ -9,6 +9,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,14 +20,17 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Version
+	@JsonIgnore
 	private long version;
 
+	@JsonIgnore
 	private Date createDate;
 
+	@JsonIgnore
 	private boolean active;
 
 	@PrePersist

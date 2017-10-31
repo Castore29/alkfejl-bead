@@ -1,4 +1,4 @@
-package edu.ik.alkfejl.fishingshop;
+package hu.elte.alkfejl.fishingshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

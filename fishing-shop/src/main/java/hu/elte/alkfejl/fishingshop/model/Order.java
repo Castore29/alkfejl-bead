@@ -1,5 +1,6 @@
-package edu.ik.alkfejl.fishingshop.model;
+package hu.elte.alkfejl.fishingshop.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -27,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class Order extends BaseEntity {
 
 	@Column(nullable = false)
-	private long orderNumber;
+	private Long orderNumber;
 
 	@ManyToOne(optional = false)
 	private User user;
@@ -35,7 +36,7 @@ public class Order extends BaseEntity {
 	@ManyToMany
 	@JoinTable(name = "ORDERS_PRODUCTS")
 	@JsonIgnore
-	private List<Product> products;
+	private List<Product> products = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
