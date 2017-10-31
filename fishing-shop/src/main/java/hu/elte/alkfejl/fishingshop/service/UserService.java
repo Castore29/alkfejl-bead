@@ -1,8 +1,11 @@
 package hu.elte.alkfejl.fishingshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
+
+import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.model.User;
 import hu.elte.alkfejl.fishingshop.repository.UserRepository;
@@ -21,6 +24,10 @@ public class UserService {
 			return this.user = userRepository.findByActiveAndEmail(true, user.getEmail()).get();
 		}
 		throw new UserNotValidException();
+	}
+	
+	public Iterable<User> list(Predicate predicate, Pageable pageable) {
+		return userRepository.findAll(predicate, pageable);
 	}
 
 	public void logout() {

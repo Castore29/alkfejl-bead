@@ -9,16 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.*;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.querydsl.core.types.dsl.StringPath;
 
 import hu.elte.alkfejl.fishingshop.model.Product;
 import hu.elte.alkfejl.fishingshop.model.QProduct;
 
-public interface ProductRepository
-		extends SoftDeleteCrudRepository<Product, Long>, PagingAndSortingRepository<Product, Long>,
-		QueryDslPredicateExecutor<Product>, QuerydslBinderCustomizer<QProduct> {
+public interface ProductRepository extends SoftDeletePagingRepository<Product, Long>, QueryDslPredicateExecutor<Product>,
+		QuerydslBinderCustomizer<QProduct> {
 
 	Optional<Product> findByActiveAndItemNumber(boolean active, long itemNumber);
 
@@ -39,6 +37,10 @@ public interface ProductRepository
 			Iterator<? extends Integer> it = value.iterator();
 			return path.between(it.next(), it.next());
 		});
+
+		bindings.bind(product.available).first((path, value) -> path.eq(value));
+		bindings.bind(product.discount).first((path, value) -> path.goe(value));
+		bindings.bind(product.stock).first((path, value) -> path.goe(value));
 
 		bindings.bind(String.class).first((StringPath path, String value) -> path.containsIgnoreCase(value));
 		bindings.excluding(product.image);

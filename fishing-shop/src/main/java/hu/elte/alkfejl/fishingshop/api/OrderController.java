@@ -1,6 +1,10 @@
 package hu.elte.alkfejl.fishingshop.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.annotation.Role;
 import hu.elte.alkfejl.fishingshop.model.Order;
@@ -28,21 +34,23 @@ public class OrderController {
 
 	@Role(ADMIN)
 	@GetMapping("/all")
-	public ResponseEntity<Iterable<Order>> getOrders() {
-		return ResponseEntity.ok(orderService.list());
+	public ResponseEntity<Iterable<Order>> getOrders(@QuerydslPredicate(root = Order.class) Predicate predicate,
+			@PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
+		return ResponseEntity.ok(orderService.list(predicate, pageable));
 	}
 
 	@Role({ ADMIN, USER })
 	@GetMapping("/myOrders")
-	public ResponseEntity<Iterable<Order>> getOrdersByUser() {
+	public ResponseEntity<Iterable<Order>> getOrdersByUser(@QuerydslPredicate(root = Order.class) Predicate predicate,
+			@PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
 		if (userService.isLoggedIn()) {
-			return ResponseEntity.ok(orderService.listByUser(userService.getLoggedInUser()));
+			return ResponseEntity.ok(orderService.listByUser(userService.getLoggedInUser(), predicate, pageable));
 		}
 		return ResponseEntity.badRequest().build();
 	}
 
 	@Role({ ADMIN, USER })
-	@PostMapping("/add")
+	@PostMapping("/save")
 	public ResponseEntity<Order> postOrder(@RequestBody Order order) {
 		order.setUser(userService.getLoggedInUser());
 		return ResponseEntity.ok(orderService.createOrUpdate(order));

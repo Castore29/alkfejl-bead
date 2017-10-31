@@ -12,7 +12,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,14 +27,16 @@ import lombok.NoArgsConstructor;
 public class Order extends BaseEntity {
 
 	@Column(nullable = false)
-	private Long orderNumber;
+	private String orderNumber;
 
 	@ManyToOne(optional = false)
 	private User user;
+	
+	@Column(nullable = false)
+	private Integer total;
 
 	@ManyToMany
 	@JoinTable(name = "ORDERS_PRODUCTS")
-	@JsonIgnore
 	private List<Product> products = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
@@ -43,7 +44,7 @@ public class Order extends BaseEntity {
 	private Status status;
 
 	public enum Status {
-		RECEIVED, PROCESSED, DELIVERING, CLOSED
+		RECEIVED, PROCESSED, DELIVERING, CLOSED, CANCELLED
 	}
 
 }
