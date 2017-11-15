@@ -14,7 +14,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,10 +46,10 @@ public class Product extends BaseEntity {
 	private String description;
 
 	private String producer;
-
+	
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	private MultipartFile image;
+	private byte[] image;
 
 	@Min(0)
 	@Column(nullable = false)

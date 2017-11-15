@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.annotation.Role;
@@ -23,12 +28,17 @@ import hu.elte.alkfejl.fishingshop.service.ProductService;
 
 import static hu.elte.alkfejl.fishingshop.model.User.Role.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Role({ ADMIN, USER, GUEST })
 	@GetMapping("/categories")
@@ -42,8 +52,8 @@ public class ProductController {
 
 	@Role({ ADMIN, USER, GUEST })
 	@GetMapping("/list")
-	public ResponseEntity<Iterable<Product>> getProducts(@RequestParam(name = "cat", required = false) String category,
-			@RequestParam(name = "subCat", required = false) String subCategory, Pageable pageable) {
+	public ResponseEntity<Iterable<Product>> getProducts(@RequestParam(name = "category", required = true) String category,
+			@RequestParam(name = "subCategory", required = true) String subCategory, Pageable pageable) {
 		return ResponseEntity.ok(productService.list(category, subCategory, pageable));
 	}
 
@@ -63,12 +73,21 @@ public class ProductController {
 
 	@Role(ADMIN)
 	@PostMapping("/save")
-	public ResponseEntity<?> postProduct(@RequestBody Product product) {
+	public ResponseEntity<?> postProduct(@RequestPart("product") String productJson,
+			@RequestPart(name = "file", required = false) MultipartFile image) {
 		try {
-			Product result = productService.createOrUpdate(product);
-			return ResponseEntity.ok(result);
+			Product product = mapper.readValue(productJson, Product.class);
+			return ResponseEntity.ok(productService.createOrUpdate(product, image));
 		} catch (DataIntegrityViolationException e) {
 			return ResponseEntity.badRequest().body("Item Number already exists!");
+		} catch (IllegalStateException e) {
+			return ResponseEntity.badRequest().body("Image is too big! Max. 1 MB");
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (JsonParseException | JsonMappingException e) {
+			return ResponseEntity.badRequest().body("Bad JSON format for Product!");
+		} catch (IOException e) {
+			return ResponseEntity.badRequest().body("Wrong file type! Must be jpg/jpeg");
 		}
 	}
 

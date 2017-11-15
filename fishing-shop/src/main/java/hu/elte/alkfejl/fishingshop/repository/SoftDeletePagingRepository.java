@@ -2,14 +2,15 @@ package hu.elte.alkfejl.fishingshop.repository;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.elte.alkfejl.fishingshop.model.BaseEntity;
 
 @NoRepositoryBean
-public interface SoftDeleteCrudRepository<T extends BaseEntity, ID extends Long> extends CrudRepository<T, ID> {
+public interface SoftDeletePagingRepository<T extends BaseEntity, ID extends Long>
+		extends PagingAndSortingRepository<T, ID> {
 
 	@Override
 	@Transactional(readOnly = true)
