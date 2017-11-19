@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import static hu.elte.alkfejl.fishingshop.model.User.Role.*;
 
 @RestController
 @RequestMapping("/api/order")
+@CrossOrigin(origins="*")
 public class OrderController {
 
 	@Autowired

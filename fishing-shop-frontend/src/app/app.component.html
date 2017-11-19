@@ -5,7 +5,7 @@
         Menü
       </mat-list-item>
       <mat-list-item>
-        <button mat-button [matMenuTriggerFor]="categories">Kategóriák</button>
+        <button mat-button [matMenuTriggerFor]="catButton">Kategóriák</button>
       </mat-list-item>
       <mat-list-item>
         <button mat-button routerLink="/cart">Kosaram</button>
@@ -24,7 +24,7 @@
     <span class="fill-remaining-space"></span>
 
     <div fxLayout="row" fxShow="false" fxShow.gt-sm>
-      <button mat-button [matMenuTriggerFor]="categories" >Kategóriák</button>
+      <button mat-button [matMenuTriggerFor]="catButton" >Kategóriák</button>
       <button mat-button routerLink="/cart">Kosaram</button>
       <button mat-button routerLink="/login">Bejelentkezés</button>
     </div>
@@ -35,11 +35,20 @@
     </div>
     <span class="fill-remaining-space"></span>
   </mat-toolbar>
-  <mat-menu [overlapTrigger]="false" #categories="matMenu">
-    <mat-list>
-      <mat-list-item>Csalik</mat-list-item>
-      <mat-list-item>Botok</mat-list-item>
-    </mat-list>
+
+  <mat-menu [overlapTrigger]="false" #catButton="matMenu">
+    <ng-container *ngFor="let category of categories">
+      <button  mat-menu-item [matMenuTriggerFor]="subCatButton"  (mouseenter)="getSubCat(category)">
+        {{category}}
+      </button>
+      <mat-menu [overlapTrigger]="false" #subCatButton="matMenu">
+        <ng-container *ngFor="let subCategory of subCategories[selectedCategory]">
+          <button mat-menu-item >
+            {{subCategory}}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </ng-container>
   </mat-menu>
 
   <div class="container full-height full-width">

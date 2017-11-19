@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ import hu.elte.alkfejl.fishingshop.service.UserService.UserNotValidException;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins="*")
 public class UserController {
 
 	@Autowired
