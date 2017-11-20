@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {User} from '../model/user';
 
 @Injectable()
@@ -8,7 +8,14 @@ export class UserService {
   private loggedInUser: User;
 
   constructor(protected http: HttpClient) {
-    this.loggedInUser = JSON.parse(localStorage.getItem('user'));
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      this.login(JSON.parse(userString)).subscribe(data => {
+        this.loggedInUser = data;
+      }, err => {
+        console.log(err);
+      });
+    }
   }
 
   setLoggedInUser(user: User): void {
