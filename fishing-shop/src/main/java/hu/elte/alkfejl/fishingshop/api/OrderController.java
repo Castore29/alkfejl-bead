@@ -17,22 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.annotation.Role;
+import hu.elte.alkfejl.fishingshop.config.UserSession;
 import hu.elte.alkfejl.fishingshop.model.Order;
 import hu.elte.alkfejl.fishingshop.service.OrderService;
-import hu.elte.alkfejl.fishingshop.service.UserService;
 
 import static hu.elte.alkfejl.fishingshop.model.User.Role.*;
 
 @RestController
 @RequestMapping("/api/order")
-@CrossOrigin(origins="*")
+@CrossOrigin("*")
 public class OrderController {
 
 	@Autowired
 	private OrderService orderService;
 
 	@Autowired
-	private UserService userService;
+	private UserSession userSession;
 
 	@Role(ADMIN)
 	@GetMapping("/all")
@@ -45,8 +45,8 @@ public class OrderController {
 	@GetMapping("/myOrders")
 	public ResponseEntity<Iterable<Order>> getOrdersByUser(@QuerydslPredicate(root = Order.class) Predicate predicate,
 			@PageableDefault(sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable) {
-		if (userService.isLoggedIn()) {
-			return ResponseEntity.ok(orderService.listByUser(userService.getLoggedInUser(), predicate, pageable));
+		if (userSession.isLoggedIn()) {
+			return ResponseEntity.ok(orderService.listByUser(userSession.getLoggedInUser(), predicate, pageable));
 		}
 		return ResponseEntity.badRequest().build();
 	}
@@ -54,7 +54,7 @@ public class OrderController {
 	@Role({ ADMIN, USER })
 	@PostMapping("/save")
 	public ResponseEntity<Order> postOrder(@RequestBody Order order) {
-		order.setUser(userService.getLoggedInUser());
+		order.setUser(userSession.getLoggedInUser());
 		return ResponseEntity.ok(orderService.createOrUpdate(order));
 	}
 

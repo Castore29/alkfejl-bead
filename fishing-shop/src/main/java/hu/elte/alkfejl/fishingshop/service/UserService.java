@@ -1,68 +1,55 @@
 package hu.elte.alkfejl.fishingshop.service;
 
+import java.util.Date;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope;
 
 import com.querydsl.core.types.Predicate;
 
+import hu.elte.alkfejl.fishingshop.config.UserSession;
 import hu.elte.alkfejl.fishingshop.model.User;
 import hu.elte.alkfejl.fishingshop.repository.UserRepository;
 
 @Service
-@SessionScope
 public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 
-	private User user;
+	@Autowired
+	private UserSession userSession;
 
 	public User login(User user) throws UserNotValidException {
-		if (isValid(user)) {
-			return this.user = userRepository.findByActiveAndEmail(true, user.getEmail()).get();
+		Optional<User> original = userRepository.findByActiveAndEmail(true, user.getEmail());
+		if (original.isPresent()) {
+			this.userSession.setLoggedInUser(original.get());
+			return this.userSession.getLoggedInUser();
 		}
 		throw new UserNotValidException();
 	}
-	
+
 	public Iterable<User> list(Predicate predicate, Pageable pageable) {
 		return userRepository.findAll(predicate, pageable);
 	}
 
-	public void logout() {
-		user = null;
-	}
-
 	public User register(User user) {
-		User oldUser = userRepository.findByActiveAndEmail(false, user.getEmail()).get();
-		if (oldUser != null) {
-			user.setId(oldUser.getId());
+		Optional<User> oldUser = userRepository.findByEmail(user.getEmail());
+		if (oldUser.isPresent()) {
+			user.setId(oldUser.get().getId());
+			user.setCreateDate(oldUser.get().isActive() ? oldUser.get().getCreateDate() : new Date());
+			user.setActive(true);
+			user.setVersion(oldUser.get().getVersion());
 		}
-		return this.user = userRepository.save(user);
+		this.userSession.setLoggedInUser(userRepository.save(user));
+		return this.userSession.getLoggedInUser();
 	}
 
 	public void deregister() {
-		if (isLoggedIn()) {
-			userRepository.delete(user);
-			logout();
-		}
-	}
-
-	public User update(User user) {
-		return this.user = userRepository.save(user);
-	}
-
-	public boolean isValid(User user) {
-		return userRepository.findByActiveAndEmail(true, user.getEmail()).isPresent();
-	}
-
-	public boolean isLoggedIn() {
-		return user != null;
-	}
-
-	public User getLoggedInUser() {
-		return user;
+		userRepository.delete(this.userSession.getLoggedInUser());
+		this.userSession.logout();
 	}
 
 	public class UserNotValidException extends Exception {

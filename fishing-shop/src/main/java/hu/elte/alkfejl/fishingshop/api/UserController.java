@@ -4,6 +4,8 @@ import static hu.elte.alkfejl.fishingshop.model.User.Role.ADMIN;
 import static hu.elte.alkfejl.fishingshop.model.User.Role.GUEST;
 import static hu.elte.alkfejl.fishingshop.model.User.Role.USER;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,23 +23,27 @@ import org.springframework.web.bind.annotation.RestController;
 import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.annotation.Role;
+import hu.elte.alkfejl.fishingshop.config.UserSession;
 import hu.elte.alkfejl.fishingshop.model.User;
 import hu.elte.alkfejl.fishingshop.service.UserService;
 import hu.elte.alkfejl.fishingshop.service.UserService.UserNotValidException;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins="*")
+@CrossOrigin("*")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserSession userSession;
 
 	@Role({ ADMIN, USER })
 	@GetMapping
 	public ResponseEntity<User> user() {
-		if (userService.isLoggedIn()) {
-			return ResponseEntity.ok(userService.getLoggedInUser());
+		if (userSession.isLoggedIn()) {
+			return ResponseEntity.ok(userSession.getLoggedInUser());
 		}
 		return ResponseEntity.badRequest().build();
 	}
@@ -51,7 +57,7 @@ public class UserController {
 
 	@Role({ ADMIN, USER, GUEST })
 	@PostMapping("/register")
-	public ResponseEntity<User> register(@RequestBody User user) {
+	public ResponseEntity<User> register(@RequestBody User user, HttpSession session) {
 		return ResponseEntity.ok(userService.register(user));
 	}
 
@@ -59,12 +65,12 @@ public class UserController {
 	@DeleteMapping("/deregister")
 	public ResponseEntity<User> deregister() {
 		userService.deregister();
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(204).build();
 	}
 
 	@Role({ ADMIN, USER, GUEST })
 	@PostMapping("/login")
-	public ResponseEntity<User> login(@RequestBody User user) {
+	public ResponseEntity<User> login(@RequestBody User user, HttpSession session) {
 		try {
 			return ResponseEntity.ok(userService.login(user));
 		} catch (UserNotValidException e) {
@@ -74,9 +80,9 @@ public class UserController {
 
 	@Role({ ADMIN, USER, GUEST })
 	@PostMapping("/logout")
-	public ResponseEntity<User> logout(@RequestBody User user) {
-		userService.logout();
-		return ResponseEntity.ok().build();
+	public ResponseEntity<User> logout() {
+		userSession.logout();
+		return ResponseEntity.status(204).build();
 	}
 
 }

@@ -16,6 +16,7 @@ import hu.elte.alkfejl.fishingshop.model.User;
 public interface UserRepository extends SoftDeletePagingRepository<User, Long>, QueryDslPredicateExecutor<User>,
 		QuerydslBinderCustomizer<QUser> {
 
+	Optional<User> findByEmail(String email);
 	Optional<User> findByActiveAndEmail(boolean active, String email);
 	
 	@Override

@@ -33,7 +33,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/product")
-@CrossOrigin(origins="*")
+@CrossOrigin("*")
 public class ProductController {
 
 	@Autowired

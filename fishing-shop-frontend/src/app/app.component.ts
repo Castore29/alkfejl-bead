@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {Router} from '@angular/router';
+import {ProductService} from './service/product.service';
+import {UserService} from './service/user.service';
+import {LoginDialogComponent} from './dialog/login-dialog/login-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +14,17 @@ export class AppComponent implements OnInit {
   categories: string[] = ['egy', 'ketto'];
   subCategories: { [key: string]: string[]; };
   selectedCategory: string;
-  host = 'http://localhost:8080/';
 
-  constructor(private http: HttpClient) {
+  constructor(private dialog: MatDialog,
+              private productService: ProductService,
+              private userService: UserService,
+              private snackBar: MatSnackBar,
+              private router: Router) {
     this.subCategories = {};
   }
 
   ngOnInit(): void {
-    this.http.get<string[]>(this.host + '/api/product/categories').subscribe(data => {
+    this.productService.getCategories().subscribe(data => {
         this.categories = data;
       },
       err => {
@@ -25,11 +32,10 @@ export class AppComponent implements OnInit {
       });
   }
 
-  getSubCat(cat): void {
+  getSubCat(cat: string): void {
     this.selectedCategory = cat;
     if (!this.subCategories[cat]) {
-      this.http.get<string[]>(this.host + '/api/product/categories',
-        {params: new HttpParams().set('cat', cat)}).subscribe(data => {
+      this.productService.getSubCategories(cat).subscribe(data => {
           this.subCategories[cat] = data;
         },
         err => {
@@ -37,4 +43,35 @@ export class AppComponent implements OnInit {
         });
     }
   }
+
+  openSnackBar(message: string, action: string): void {
+    this.snackBar.open(message, action, { duration: 5000 });
+  }
+
+  loginDialog(): void {
+    const dialogRef = this.dialog.open(LoginDialogComponent, {
+      width: '300px',
+      data: {email: '', password: ''}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.login(result).subscribe(data => {
+            this.userService.setLoggedInUser(data);
+            this.router.navigateByUrl('');
+          },
+          err => {
+            this.openSnackBar('Hibás bejelentkezési adatok', 'Bezárás');
+          });
+      }
+    });
+  }
+
+  logout(): void {
+    this.userService.logout().subscribe(data => {
+      this.userService.setLoggedInUser(null);
+    }, err => {
+      console.log(err);
+    });
+  }
+
 }

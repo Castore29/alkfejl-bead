@@ -1,0 +1,23 @@
+<form #loginForm="ngForm">
+  <label mat-dialog-title class="d-flex justify-content-center">Bejelentkezés</label>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input [value]="data.email" (input)="data.email = $event.target.value" matInput placeholder="E-mail cím" [formControl]="emailFormControl" required>
+    <mat-error *ngIf="emailFormControl.invalid">
+      {{getEmailErrorMessage()}}
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input [value]="data.password" (input)="data.password = $event.target.value" matInput type="password" placeholder="Jelszó" [formControl]="passwordFormControl" required>
+    <mat-error *ngIf="passwordFormControl.invalid">
+      {{getPasswordErrorMessage()}}
+    </mat-error>
+  </mat-form-field>
+  <mat-dialog-actions class="d-flex justify-content-center align-items-center">
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid">
+      Bejelentkezés
+    </button>
+    <button mat-raised-button color="accent" type="reset" (click)="onReset()">
+      Mégse
+    </button>
+  </mat-dialog-actions>
+</form>

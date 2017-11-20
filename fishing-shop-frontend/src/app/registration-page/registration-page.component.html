@@ -1,0 +1,48 @@
+<form #form="ngForm" [formGroup]="registrationForm" novalidate (ngSubmit)="onSubmit()">
+  <h2 mat-subheader class="d-flex justify-content-center">
+    <div *ngIf="userService.loggedInUser">
+      Profil módosítása
+    </div>
+    <div *ngIf="!userService.loggedInUser">
+      Regisztráció
+    </div>
+  </h2>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input formControlName="userName" matInput placeholder="Felhasználónév">
+    <mat-error *ngIf="registrationForm.controls['userName'].hasError('required')">
+      A mező kitöltése kötelező!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input formControlName="email" matInput placeholder="E-mail cím">
+    <mat-error *ngIf="registrationForm.controls['email'].invalid">
+      {{getEmailErrorMessage()}}
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input formControlName="password" matInput type="password" placeholder="Jelszó">
+    <mat-error *ngIf="registrationForm.controls['password'].hasError('required')">
+      A mező kitöltése kötelező!
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input formControlName="address" matInput placeholder="Szállítási cím">
+  </mat-form-field>
+  <mat-form-field class="form-group d-flex justify-content-center align-items-center">
+    <input formControlName="phoneNumber" matInput placeholder="Telefonszám">
+  </mat-form-field>
+  <div class="d-flex justify-content-center align-items-center">
+    <button *ngIf="userService.loggedInUser" mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid">
+      Módosítás
+    </button>
+    <button *ngIf="!userService.loggedInUser" mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid">
+      Regisztráció
+    </button>
+    <button mat-raised-button color="accent" type="reset">
+      Mégse
+    </button>
+    <button *ngIf="userService.loggedInUser" type="button" mat-raised-button color="warn" (click)="deregister()">
+      Regisztráció törlése
+    </button>
+  </div>
+</form>

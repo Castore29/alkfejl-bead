@@ -10,9 +10,25 @@
       <mat-list-item>
         <button mat-button routerLink="/cart">Kosaram</button>
       </mat-list-item>
-      <mat-list-item>
-        <button mat-button routerLink="/login">Bejelentkezés</button>
-      </mat-list-item>
+      <div *ngIf="!userService.loggedInUser">
+        <mat-list-item>
+          <button mat-button (click)="loginDialog()">Bejelentkezés</button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button routerLink="/register">Regisztráció</button>
+        </mat-list-item>
+      </div>
+      <div *ngIf="userService.loggedInUser">
+        <mat-list-item>
+          <button mat-button routerLink="/profile">
+            <mat-icon>account circle</mat-icon>
+            {{userService.loggedInUser.userName}}
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button (click)="logout()">Kijelentkezés</button>
+        </mat-list-item>
+      </div>
     </mat-list>
   </mat-sidenav>
   <mat-toolbar color="primary" role="navigation">
@@ -26,7 +42,17 @@
     <div fxLayout="row" fxShow="false" fxShow.gt-sm>
       <button mat-button [matMenuTriggerFor]="catButton" >Kategóriák</button>
       <button mat-button routerLink="/cart">Kosaram</button>
-      <button mat-button routerLink="/login">Bejelentkezés</button>
+      <div *ngIf="!userService.loggedInUser">
+        <button mat-button (click)="loginDialog()">Bejelentkezés</button>
+        <button mat-button routerLink="/register">Regisztráció</button>
+      </div>
+      <div *ngIf="userService.loggedInUser">
+        <button mat-button routerLink="/profile">
+          <mat-icon>account_circle</mat-icon>
+          {{userService.loggedInUser.userName}}
+        </button>
+        <button mat-button (click)="logout()">Kijelentkezés</button>
+      </div>
     </div>
     <div>
       <button mat-icon-button (click)="sidenav.open()" fxHide="false" fxHide.gt-sm>

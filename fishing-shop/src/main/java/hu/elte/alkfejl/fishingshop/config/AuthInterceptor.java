@@ -14,26 +14,26 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import hu.elte.alkfejl.fishingshop.annotation.Role;
 import hu.elte.alkfejl.fishingshop.model.User;
-import hu.elte.alkfejl.fishingshop.service.UserService;
 
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
 	@Autowired
-	private UserService userService;
+	private UserSession userSession;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		if (!(handler instanceof HandlerMethod)) {
+			return true;
+		}
 		List<User.Role> routeRoles = getRoles((HandlerMethod) handler);
-		User user = userService.getLoggedInUser();
-
 		// when there are no restrictions, we let the user through
 		if (routeRoles.isEmpty() || routeRoles.contains(User.Role.GUEST)) {
 			return true;
 		}
 		// check role
-		if (userService.isLoggedIn() && routeRoles.contains(user.getRole())) {
+		if (userSession.isLoggedIn() && routeRoles.contains(userSession.getLoggedInUser().getRole())) {
 			return true;
 		}
 		response.setStatus(401);
