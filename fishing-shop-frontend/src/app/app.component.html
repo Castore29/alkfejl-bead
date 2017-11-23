@@ -21,7 +21,7 @@
       <div *ngIf="userService.loggedInUser">
         <mat-list-item>
           <button mat-button routerLink="/profile">
-            <mat-icon>account circle</mat-icon>
+            <mat-icon>account_circle</mat-icon>
             {{userService.loggedInUser.userName}}
           </button>
         </mat-list-item>
@@ -31,16 +31,12 @@
       </div>
     </mat-list>
   </mat-sidenav>
-  <mat-toolbar color="primary" role="navigation">
-    <span class="fill-remaining-space"></span>
+  <mat-toolbar color="primary" role="navigation" class="d-flex justify-content-around">
     <button mat-button routerLink="/">
       Horgászbolt
     </button>
-
-    <span class="fill-remaining-space"></span>
-
     <div fxLayout="row" fxShow="false" fxShow.gt-sm>
-      <button mat-button [matMenuTriggerFor]="catButton" >Kategóriák</button>
+      <button mat-button [matMenuTriggerFor]="catButton">Kategóriák</button>
       <button mat-button routerLink="/cart">Kosaram</button>
       <div *ngIf="!userService.loggedInUser">
         <button mat-button (click)="loginDialog()">Bejelentkezés</button>
@@ -54,22 +50,19 @@
         <button mat-button (click)="logout()">Kijelentkezés</button>
       </div>
     </div>
-    <div>
-      <button mat-icon-button (click)="sidenav.open()" fxHide="false" fxHide.gt-sm>
-        <mat-icon>menu</mat-icon>
-      </button>
-    </div>
-    <span class="fill-remaining-space"></span>
+    <button mat-icon-button (click)="sidenav.open()" fxHide="false" fxHide.gt-sm>
+      <mat-icon>menu</mat-icon>
+    </button>
   </mat-toolbar>
 
   <mat-menu [overlapTrigger]="false" #catButton="matMenu">
     <ng-container *ngFor="let category of categories">
-      <button  mat-menu-item [matMenuTriggerFor]="subCatButton"  (mouseenter)="getSubCat(category)">
+      <label mat-menu-item [matMenuTriggerFor]="subCatButton" (mouseover)="selectedCategory=category">
         {{category}}
-      </button>
+      </label>
       <mat-menu [overlapTrigger]="false" #subCatButton="matMenu">
         <ng-container *ngFor="let subCategory of subCategories[selectedCategory]">
-          <button mat-menu-item >
+          <button mat-menu-item (click)="goToProducts(subCategory, sidenav)">
             {{subCategory}}
           </button>
         </ng-container>

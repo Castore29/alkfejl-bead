@@ -4,14 +4,16 @@ import {UserService} from '../service/user.service';
 import {Router} from '@angular/router';
 import {MatSnackBar, MatDialog} from '@angular/material';
 import {ConfirmDialogComponent} from '../dialog/confirm-dialog/confirm-dialog.component';
+import {Role} from '../model/user';
 
 @Component({
-  selector: 'app-registration-page',
-  templateUrl: './registration-page.component.html',
-  styleUrls: ['./registration-page.component.css']
+  selector: 'app-profile-page',
+  templateUrl: './profile-page.component.html',
+  styleUrls: ['./profile-page.component.css']
 })
-export class RegistrationPageComponent implements OnInit {
+export class ProfilePageComponent implements OnInit {
   registrationForm: FormGroup;
+  showPassword: boolean;
 
   constructor(private fb: FormBuilder,
               private userService: UserService,
@@ -25,7 +27,7 @@ export class RegistrationPageComponent implements OnInit {
       password: [user ? user.password : '', Validators.required],
       address: user ? user.address : '',
       phoneNumber: user ? user.phoneNumber : '',
-      role: user ? user.role : 'USER',
+      role: user ? user.role : Role.USER,
     });
   }
 
@@ -33,31 +35,32 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.userService.getLoggedInUser()) {
-      this.registrationForm.value['id'] = this.userService.getLoggedInUser().id;
-    }
+    const isUpdate: boolean = this.userService.getLoggedInUser() != null;
     this.userService.register(this.registrationForm.value).subscribe(data => {
       let msg: string;
-      if (this.userService.getLoggedInUser()) {
+      if (isUpdate) {
         msg = 'Sikeres módosítás!';
       } else {
         msg = 'Sikeres regisztráció!';
       }
       this.userService.setLoggedInUser(data);
       this.snackBar.open(msg, 'OK', {duration: 2000});
-      this.router.navigateByUrl('/');
+      if (!isUpdate) {
+        this.router.navigateByUrl('/');
+      }
     }, err => {
-      console.log(err);
+      this.snackBar.open(err.error, 'OK', {duration: 2000});
     });
   }
 
-  deregister(): void {
+  deactivate(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px'
+      width: '250px',
+      data: 'Biztos törölni akarod a profilod?'
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.userService.deregister().subscribe(data => {
+        this.userService.deactivate().subscribe(data => {
           this.userService.setLoggedInUser(null);
           this.snackBar.open('Regisztráció törölve!', 'OK', {duration: 2000});
           this.router.navigateByUrl('/');

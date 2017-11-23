@@ -1,0 +1,20 @@
+.product-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.product-grid-item {
+  display: flex;
+  flex-direction: column;
+  padding: 1%;
+  margin: 1%;
+  justify-items: center;
+  border: 2px solid teal;
+  border-radius: 5px;
+}
+
+.product-image {
+  width: 250px;
+  height: 250px;
+}

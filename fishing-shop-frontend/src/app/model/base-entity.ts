@@ -1,6 +1,6 @@
-export class BaseEntity {
-  id: number;
-  version: number;
-  createDate: Date;
-  active: boolean;
+export interface BaseEntity {
+  id?: number;
+  version?: number;
+  createDate?: Date;
+  active?: boolean;
 }

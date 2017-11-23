@@ -12,6 +12,10 @@ import {
   MatListModule,
   MatDialogModule,
   MatSnackBarModule,
+  MatCheckboxModule,
+  MatTooltipModule,
+  MatGridListModule,
+  MatCardModule,
 } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -27,10 +31,14 @@ import {ConfirmDialogComponent} from './dialog/confirm-dialog/confirm-dialog.com
 import {UserService} from './service/user.service';
 import {ProductService} from './service/product.service';
 import {OrderService} from './service/order.service';
-import {RegistrationPageComponent} from './registration-page/registration-page.component';
+import {ProfilePageComponent} from './profile-page/profile-page.component';
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptor} from './service/auth-interceptor';
+import {ProductListComponent} from './product-list/product-list.component';
+import {CartPageComponent} from './cart-page/cart-page.component';
+import {MyOrdersComponent} from './my-orders/my-orders.component';
+import {StatusPipe} from './pipe/status.pipe';
 
 
 @NgModule({
@@ -38,8 +46,12 @@ import {AuthInterceptor} from './service/auth-interceptor';
     AppComponent,
     MainPageComponent,
     LoginDialogComponent,
-    RegistrationPageComponent,
-    ConfirmDialogComponent
+    ProfilePageComponent,
+    ConfirmDialogComponent,
+    ProductListComponent,
+    CartPageComponent,
+    MyOrdersComponent,
+    StatusPipe,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +67,10 @@ import {AuthInterceptor} from './service/auth-interceptor';
     MatListModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatGridListModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
@@ -62,7 +78,7 @@ import {AuthInterceptor} from './service/auth-interceptor';
     HttpClientModule,
   ],
   providers: [OrderService, ProductService, UserService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true, } ],
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true,}],
   bootstrap: [AppComponent],
   entryComponents: [LoginDialogComponent, ConfirmDialogComponent]
 })

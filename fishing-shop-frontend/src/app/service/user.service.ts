@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../model/user';
 
@@ -8,19 +8,22 @@ export class UserService {
   private loggedInUser: User;
 
   constructor(protected http: HttpClient) {
+    this.loggedInUser = null;
     const userString = localStorage.getItem('user');
     if (userString) {
       this.login(JSON.parse(userString)).subscribe(data => {
         this.loggedInUser = data;
       }, err => {
-        console.log(err);
+        console.log(err.error);
       });
     }
   }
 
   setLoggedInUser(user: User): void {
     this.loggedInUser = user;
-    localStorage.setItem('user', JSON.stringify(this.loggedInUser));
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(this.loggedInUser));
+    }
   }
 
   getLoggedInUser(): User {
@@ -39,8 +42,8 @@ export class UserService {
     return this.http.post<User>(this.host + 'api/user/register', user);
   }
 
-  deregister() {
-    return this.http.delete(this.host + 'api/user/deregister');
+  deactivate() {
+    return this.http.delete(this.host + 'api/user/deactivate');
   }
 
 }

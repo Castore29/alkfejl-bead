@@ -1,0 +1,25 @@
+<div class="d-flex flex-row flex-wrap">
+  <div class="order-card-holder" *ngFor="let order of myOrders">
+    <mat-card class="order-card">
+      <h4 mat-card-title style="text-align: center">Azonosító: {{order.orderNumber}}</h4>
+      <mat-card-content>
+        <h6 style="text-align: center">Rendelt termékek:</h6>
+        <mat-list class="product-list">
+          <mat-list-item *ngFor="let product of order.products">
+            {{product.productName}}
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-card-footer class="d-flex flex-column">
+        <div class="order-footer-holder">
+          <span class="order-footer">Rendelés összege:</span>
+          <span class="order-footer">{{order.total | currency : "HUF" : 0}}</span>
+        </div>
+        <div class="order-footer-holder">
+          <span class="order-footer">Státusz:</span>
+          <span class="order-footer">{{order.status | status}}</span>
+        </div>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+</div>

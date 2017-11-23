@@ -1,11 +1,11 @@
-<mat-dialog-content class="d-flex justify-content-center align-items-center">
-  Biztos vagy benne?
+<mat-dialog-content style="text-align: center">
+  {{data ? data : 'Biztos vagy benne?'}}
 </mat-dialog-content>
-<mat-dialog-actions class="d-flex justify-content-center align-items-center">
-  <button mat-raised-button (click)="onYesClick()">
+<mat-dialog-actions class="center">
+  <button mat-raised-button color="warn" (click)="onYesClick()">
     Igen
   </button>
-  <button mat-raised-button (click)="onNoClick()">
+  <button mat-raised-button color="primary" (click)="onNoClick()">
     Nem
   </button>
 </mat-dialog-actions>

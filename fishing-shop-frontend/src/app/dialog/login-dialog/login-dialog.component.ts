@@ -1,6 +1,8 @@
 import {Component, OnInit, Inject, ViewChild} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {FormControl, Validators} from '@angular/forms';
+import {UserService} from '../../service/user.service';
+import {User} from '../../model/user';
 
 @Component({
   selector: 'app-login-dialog',
@@ -17,8 +19,12 @@ export class LoginDialogComponent implements OnInit {
 
   passwordFormControl = new FormControl('', [Validators.required]);
 
+  showPassword: boolean;
+  loginError: string;
+
   constructor(public dialogRef: MatDialogRef<LoginDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: { email: string, password: string }) {
+              private userService: UserService,
+              @Inject(MAT_DIALOG_DATA) public data: User) {
   }
 
   ngOnInit(): void {
@@ -36,7 +42,13 @@ export class LoginDialogComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.dialogRef.close(this.data);
+    this.userService.login(this.data).subscribe(user => {
+        this.userService.setLoggedInUser(user);
+        this.dialogRef.close(this.data);
+      },
+      err => {
+        this.loginError = err.error;
+      });
   }
 
   onReset(): void {
