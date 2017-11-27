@@ -1,0 +1,24 @@
+.order-card {
+  margin: 5px;
+}
+
+.order-card-holder {
+  padding: 5px;
+}
+
+.order-footer {
+  margin: 5px;
+  font-weight: bold;
+  color: teal;
+}
+
+.order-footer-holder {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.product-list {
+  height: 200px;
+  overflow-y: auto;
+}
