@@ -1,0 +1,14 @@
+.product-grid-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 2px solid teal;
+  border-radius: 5px;
+  max-width: 275px;
+}
+
+.product-grid-item-holder {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}

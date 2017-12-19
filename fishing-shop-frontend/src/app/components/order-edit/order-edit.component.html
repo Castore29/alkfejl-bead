@@ -1,0 +1,38 @@
+<h2 class="bold-center">Rendelés módosítása</h2>
+<form #form="ngForm" [formGroup]="orderForm" novalidate (ngSubmit)="onSubmit()"
+      class="d-flex flex-column align-items-center"
+      style="margin: 5px">
+
+  <mat-form-field class="form-group form-field">
+    <input formControlName="orderNumber" matInput placeholder="Rendelés azonosító">
+    <mat-error *ngIf="orderForm.controls['orderNumber'].hasError('required')">
+      A mező kitöltése kötelező!
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="form-group form-field">
+    <mat-select formControlName="status" placeholder="Státusz">
+      <mat-option *ngFor="let status of statuses" [value]="status">{{status | status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-product-list class="d-flex flex-column justify-content-between" *ngIf="order"
+                    [products]="order.products"></app-product-list>
+
+  <div style="padding: 5px" class="d-flex flex-row">
+    <p style="margin: 5px">Végösszeg:</p>
+    <p *ngIf="order" style="margin: 5px">{{order.total | currency : "HUF" : 0}}</p>
+  </div>
+
+  <div style="padding: 5px" class="d-flex flex-row">
+    <p style="margin: 5px">Rendelés ideje:</p>
+    <p *ngIf="order" style="margin: 5px">{{order.createDate | date : "yyyy-MM-dd HH:mm:ss"}}</p>
+  </div>
+
+  <div class="button-row">
+    <button mat-raised-button color="primary" type="submit"
+            [disabled]="orderForm.invalid">
+      Rendelés módosítása
+    </button>
+  </div>
+</form>

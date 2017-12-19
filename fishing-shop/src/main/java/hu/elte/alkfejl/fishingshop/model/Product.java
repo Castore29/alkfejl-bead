@@ -46,8 +46,10 @@ public class Product extends BaseEntity {
 	@Column(nullable = false, unique = true)
 	private String itemNumber;
 
+	@Column(nullable = false) // JPA annotation to restrict null value for category
 	private String category;
 
+	@Column(nullable = false) // JPA annotation to restrict null value for subCategory
 	private String subCategory;
 
 	@NotEmpty
@@ -79,7 +81,7 @@ public class Product extends BaseEntity {
 	private Integer stock;
 
 	@Column(nullable = false) // JPA annotation to restrict null value for available
-	private Boolean available = true;
+	private boolean available;
 
 	@Min(0) // JPA annotation to validate that the stock is not less than 0
 	@Column(nullable = false) // JPA annotation to restrict null value for price
@@ -87,6 +89,7 @@ public class Product extends BaseEntity {
 
 	@Min(0) // JPA annotation to validate that the discount is not less than 0
 	@Max(100) // JPA annotation to validate that the discount is not more than 100
+	@Column(nullable = false) // JPA annotation to restrict null value for discount
 	private Integer discount; // meant to be a percentage (0-100)
 
 	/**

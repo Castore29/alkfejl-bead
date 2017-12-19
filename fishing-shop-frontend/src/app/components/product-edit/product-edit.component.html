@@ -1,0 +1,98 @@
+<form #form="ngForm" [formGroup]="productForm" novalidate (ngSubmit)="onSubmit()"
+      class="d-flex flex-column align-items-center"
+      style="margin-bottom: 2%">
+  <h2 mat-subheader class="bold-center">
+    <span *ngIf="productService.editProduct">
+      Termék módosítása
+    </span>
+    <span *ngIf="!productService.editProduct">
+      Termék felvétele
+    </span>
+  </h2>
+  <div class="d-flex flex-wrap">
+    <mat-form-field class="form-group form-field">
+      <input formControlName="itemNumber" matInput placeholder="Termékazonosító">
+      <mat-error *ngIf="productForm.controls['itemNumber'].hasError('required')">
+        A mező kitöltése kötelező!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-group form-field">
+      <input formControlName="productName" matInput placeholder="Terméknév">
+      <mat-error *ngIf="productForm.controls['productName'].hasError('required')">
+        A mező kitöltése kötelező!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-group form-field">
+      <input formControlName="producer" matInput placeholder="Gyártó">
+    </mat-form-field>
+  </div>
+  <div class="d-flex flex-wrap">
+    <mat-form-field class="form-group form-field">
+      <input formControlName="category" matInput placeholder="Kategória">
+      <mat-error *ngIf="productForm.controls['category'].hasError('required')">
+        A mező kitöltése kötelező!
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-group form-field">
+      <input formControlName="subCategory" matInput placeholder="Alkategória">
+      <mat-error *ngIf="productForm.controls['subCategory'].hasError('required')">
+        A mező kitöltése kötelező!
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field class="form-group form-field">
+    <textarea formControlName="description" matInput placeholder="Leírás"></textarea>
+    <mat-error *ngIf="productForm.controls['description'].hasError('required')">
+      A mező kitöltése kötelező!
+    </mat-error>
+  </mat-form-field>
+
+  <div class="d-flex flex-wrap">
+    <mat-form-field class="form-group form-field">
+      <input formControlName="stock" matInput type="number" placeholder="Készlet">
+      <mat-hint align="end">darab</mat-hint>
+      <mat-error *ngIf="productForm.controls['stock'].invalid">
+        {{getNumberErrorMessage('stock')}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-group form-field">
+      <input formControlName="price" matInput type="number" placeholder="Ár">
+      <mat-hint align="end">HUF</mat-hint>
+      <mat-error *ngIf="productForm.controls['price'].invalid">
+        {{getNumberErrorMessage('price')}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-group form-field">
+      <input formControlName="discount" matInput type="number" placeholder="Leértékelés">
+      <mat-hint align="end">%</mat-hint>
+      <mat-error *ngIf="productForm.controls['discount'].invalid">
+        {{getNumberErrorMessage('discount')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-checkbox formControlName="available">Elérhető</mat-checkbox>
+
+  <div class="d-flex flex-column align-items-center form-field">
+    <h5>Képfeltöltés</h5>
+    <input class="form-field" type="file" (change)="fileChange($event)" placeholder="Képfeltöltés" accept=".jpg,.jpeg">
+    <img class="product-image" [src]="'data:image/jpg;base64,' + productService.editProduct.image"
+         *ngIf="productService.editProduct && productService.editProduct.image && !preview">
+    <img class="product-image" [src]="preview" alt="Előnézet" *ngIf="preview">
+  </div>
+
+  <div class="button-row">
+    <button *ngIf="productService.editProduct" mat-raised-button color="primary" type="submit"
+            [disabled]="productForm.invalid">
+      Termék módosítása
+    </button>
+    <button *ngIf="!productService.editProduct" mat-raised-button color="primary" type="submit"
+            [disabled]="productForm.invalid">
+      Termék felvétele
+    </button>
+    <button mat-raised-button color="accent" type="reset" (click)="onReset()">
+      Mégse
+    </button>
+  </div>
+</form>

@@ -70,7 +70,7 @@ public class UserController {
 	// This method returns a list of all users with optional pagination and QueryDsl
 	// search parameters. It is ADMIN only
 	public ResponseEntity<Iterable<User>> getUsers(@QuerydslPredicate(root = User.class) Predicate predicate,
-			@PageableDefault(sort = "email", direction = Sort.Direction.DESC) Pageable pageable) {
+			@PageableDefault(size = Integer.MAX_VALUE, sort = "email", direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(userService.list(predicate, pageable));
 	}
 
@@ -113,8 +113,13 @@ public class UserController {
 	// This method soft deletes and logs out the currently logged in user. Should be
 	// cautiously used, because currently users can not be reactivated
 	public ResponseEntity<?> deactivate() {
-		userService.deactivate();
-		return ResponseEntity.status(204).build();
+		try {
+			userService.deactivate();
+			return ResponseEntity.status(204).build();
+		} catch (UserNotValidException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
 	}
 
 }

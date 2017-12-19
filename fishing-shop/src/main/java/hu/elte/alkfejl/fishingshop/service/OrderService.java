@@ -3,6 +3,7 @@ package hu.elte.alkfejl.fishingshop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
@@ -14,6 +15,8 @@ import hu.elte.alkfejl.fishingshop.model.QOrder;
 import static hu.elte.alkfejl.fishingshop.model.Order.Status.*;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import hu.elte.alkfejl.fishingshop.model.User;
@@ -45,32 +48,37 @@ public class OrderService {
 	private UserRepository userRepository;
 
 	// The createOrUpdate(Order) method handles order creation and modification
+	@Transactional
 	public Order createOrUpdate(Order order) throws OrderNotValidException {
-		validateUser(order.getUser());
+		order.setUser(validateUser(order.getUser()));
 		// if no products are ordered, the order is invalid
 		if (order.getProducts().isEmpty()) {
 			throw new OrderNotValidException("Nincs rendelt termék!");
 		}
+
+		// we create a helper map to easily iterate over the same products and their
+		// ordered amounts
+		Map<Product, Integer> productMap = new HashMap<>();
+		for (Product product : order.getProducts()) {
+			if (productMap.containsKey(product)) {
+				productMap.put(product, productMap.get(product) + 1);
+			} else {
+				product = validateProduct(product);
+				productMap.put(product, 1);
+			}
+		}
+
 		Optional<Order> original = orderRepository.findById(order.getId());
 		if (original.isPresent()) {
 			update(order, original.get());
 			// if the order already exists in the database we check their status
-			if (original.get().getStatus() != PROCESSED && order.getStatus() == PROCESSED) {
-				// if the order becomes PROCESSED, it means that the vendor received the order
-				// and is ready to reserve one piece of each ordered product, i.e. reduces the
-				// stock count by 1
-				// Note: multiple pieces of the same product can be present in the order
-				for (Product product : order.getProducts()) {
-					validateProduct(product);
-					product.setStock(product.getStock() - 1);
-				}
-			} else if (original.get().getStatus() != CANCELLED && order.getStatus() == CANCELLED) {
+			if (original.get().getStatus() != CANCELLED && order.getStatus() == CANCELLED) {
 				// if the order becomes CANCELLED, it means that the reserved products should be
 				// put back into stock
-				for (Product product : order.getProducts()) {
-					validateProduct(product);
-					product.setStock(product.getStock() + 1);
+				for (Map.Entry<Product, Integer> entry : productMap.entrySet()) {
+					entry.getKey().setStock(entry.getKey().getStock() + entry.getValue());
 				}
+				productRepository.save(productMap.keySet());
 			}
 		} else {
 			// we set the orderNumber by concatenating the user ID with the number of orders
@@ -81,24 +89,30 @@ public class OrderService {
 			order.setStatus(RECEIVED);
 			// recalculate the total price for the order
 			order.setTotal(0);
-			for (Product product : order.getProducts()) {
-				validateProduct(product);
-				order.setTotal(
-						order.getTotal() + product.getPrice() - (product.getPrice() * (product.getDiscount() / 100)));
+			// iterate over a map of products and their ordered amount
+			for (Map.Entry<Product, Integer> entry : productMap.entrySet()) {
+				order.setTotal(order.getTotal() +
+						(entry.getKey().getPrice() - entry.getKey().getPrice() * entry.getKey().getDiscount() / 100)
+						* entry.getValue());
+				// if the order is RECEIVED, we reduce the stock amount by the ordered amount of
+				// the same product
+				entry.getKey().setStock(entry.getKey().getStock() - entry.getValue());
 			}
+			productRepository.save(productMap.keySet());
 		}
-		// save the order through the repository, also saving every product with it
+
+		// save the order through the repository
 		return orderRepository.save(order);
 	}
 
 	// The validateProduct(Product) method makes sure that a product's every
 	// property stays the same, so an order can not change it
-	private void validateProduct(Product product) throws OrderNotValidException {
+	private Product validateProduct(Product product) throws OrderNotValidException {
 		Optional<Product> originalProduct = productRepository.findById(product.getId());
 		if (originalProduct.isPresent()) {
 			// if the product exists in the database, we set the ordered product's
 			// properties accordingly
-			product = originalProduct.get();
+			return originalProduct.get();
 		} else {
 			// if the id of the product is not valid, the order is invalid
 			throw new OrderNotValidException("A választott termék nem elérhető! ID: " + product.getId());
@@ -107,12 +121,12 @@ public class OrderService {
 
 	// The validateUser(User) method makes sure that a user's every
 	// property stays the same, so an order can not change it
-	private void validateUser(User user) throws OrderNotValidException {
+	private User validateUser(User user) throws OrderNotValidException {
 		Optional<User> originalUser = userRepository.findById(user.getId());
 		if (originalUser.isPresent()) {
 			// if the user exists in the database, we set the user
 			// properties accordingly
-			user = originalUser.get();
+			return originalUser.get();
 		} else {
 			// if the id of the user is not valid, the order is invalid
 			throw new OrderNotValidException("Nem létező felhasználó! ID: " + user.getId());
