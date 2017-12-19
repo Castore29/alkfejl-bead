@@ -101,28 +101,28 @@ ELTE IK - Alkalmazások fejlesztése 2017 beadandó
 
 #### Megvalósítás
 ##### Főoldal
-![Főoldal](docs/images/main-page.png)
+![Főoldal](docs/images/main-page.PNG)
 
 ##### Bejelentkezés
-![Bejelentkezés](docs/images/login.png)
+![Bejelentkezés](docs/images/login.PNG)
 
 ##### Regisztráció
-![Regisztráció](docs/images/registration.png)
+![Regisztráció](docs/images/registration.PNG)
 
 ##### Termékek böngészése
-![Termékek böngészése](docs/images/products.png)
+![Termékek böngészése](docs/images/products.PNG)
 
 ##### Kosár
-![Kosár](docs/images/cart.png)
+![Kosár](docs/images/cart.PNG)
 
 ##### Profil
-![Profil](docs/images/profile.png)
+![Profil](docs/images/profile.PNG)
 
 ##### Termékek kezelése
-![Termékek kezelése](docs/images/products2.png)
+![Termékek kezelése](docs/images/products2.PNG)
 
 ##### Rendelések kezelése
-![Rendelések kezelése](docs/images/orders.png)
+![Rendelések kezelése](docs/images/orders.PNG)
 
 ### 3. Implementáció
 #### Adatbázisterv
