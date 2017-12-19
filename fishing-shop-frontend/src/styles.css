@@ -12,3 +12,13 @@ html, body {
   justify-content: center;
   align-items: center;
 }
+
+.bold-center {
+  text-align: center;
+  font-weight: bold;
+}
+
+.product-image {
+  width: 250px;
+  height: 250px;
+}

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.querydsl.core.types.Predicate;
 
 import hu.elte.alkfejl.fishingshop.config.UserSession;
+import hu.elte.alkfejl.fishingshop.model.Order;
 import hu.elte.alkfejl.fishingshop.model.User;
+import hu.elte.alkfejl.fishingshop.repository.OrderRepository;
 import hu.elte.alkfejl.fishingshop.repository.UserRepository;
 
 /**
@@ -28,6 +30,9 @@ public class UserService {
 	// Spring annotation to mark the userRepository for dependency injection
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private OrderRepository orderRepository;
 
 	@Autowired
 	// SessionScope component, which the stores the logged in user's data
@@ -114,7 +119,17 @@ public class UserService {
 	}
 
 	// The deactivate() method simply soft deletes the logged in user
-	public void deactivate() {
+	public void deactivate() throws UserNotValidException {
+		// if the user is an ADMIN, the delete is rejected
+		if (this.userSession.getLoggedInUser().getRole() == User.Role.ADMIN)
+			throw new UserNotValidException("Admin felhasználó nem törölhető!");
+		// if the user has active orders, which are not CANCELLED or CLOSED,
+		// the delete is rejected
+		for (Order order : orderRepository.findByActiveAndUser(true, this.userSession.getLoggedInUser())) {
+			if (order.getStatus() != Order.Status.CANCELLED || order.getStatus() != Order.Status.CLOSED) {
+				throw new UserNotValidException("Aktív rendeléssel rendelkező felhasználó nem törölhető!!");
+			}
+		}
 		userRepository.delete(this.userSession.getLoggedInUser());
 		this.userSession.logout();
 	}

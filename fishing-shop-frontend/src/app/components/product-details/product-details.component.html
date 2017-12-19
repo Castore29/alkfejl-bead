@@ -1,0 +1,55 @@
+<div class="product-grid-item-holder">
+  <div class="product-grid-item">
+    <h5 style="text-align: center">{{product.productName}}</h5>
+    <div class="center flex-column" *ngIf="product.discount" style="color: teal">
+      <h5>
+        Akció!
+      </h5>
+      <h4>
+        {{product.discount + '%'}}
+      </h4>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <img class="product-image" [src]="'data:image/jpg;base64,' + product.image" *ngIf="product.image">
+      <img class="product-image" src="https://screenshotlayer.com/images/assets/placeholder.png"
+           *ngIf="!product.image">
+    </div>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title class="bold-center">
+          Leírás
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p class="bold-center">Gyártó: {{product.producer}}</p>
+      <p class="bold-center">Termékazonosító: {{product.itemNumber}}</p>
+      <p>
+        {{product.description}}
+      </p>
+    </mat-expansion-panel>
+    <span [ngStyle]="product.available ? {'color': 'green'} : {'color': 'red'}">
+        {{product.available ? 'Elérhető' : 'Jelenleg nem elérhető'}}
+      </span>
+    <span [ngStyle]="product.stock ? {'color': 'green'} : {'color': 'red'}">
+        {{product.stock ? 'Raktáron: ' + product.stock + ' db' : 'Nincs raktáron'}}
+      </span>
+
+    <div class="d-flex justify-content-end flex-wrap">
+      <h5 *ngIf="product.discount" style="color: red">
+        {{product.price * (100 - product.discount) / 100 | currency : "HUF" : 0}}
+      </h5>
+      <h6 [ngStyle]="product.discount ? {'text-decoration': 'line-through'} : {} ">
+        {{product.price | currency : "HUF" : 0}}
+      </h6>
+    </div>
+  </div>
+  <button *ngIf="userService.loggedInUser && userService.loggedInUser.role == 'ADMIN'" mat-raised-button
+          color="accent" (click)="edit(product)">
+    <mat-icon>mode_edit</mat-icon>
+    Szerkesztés
+  </button>
+  <button mat-raised-button color="primary" (click)="putInCart(product)"
+          [disabled]="!product.available || product.stock == 0">
+    <mat-icon>add_shopping_cart</mat-icon>
+    Kosárba!
+  </button>
+</div>

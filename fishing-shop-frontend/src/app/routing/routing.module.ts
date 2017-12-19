@@ -1,10 +1,12 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {MainPageComponent} from '../main-page/main-page.component';
-import {ProfilePageComponent} from '../profile-page/profile-page.component';
-import {ProductListComponent} from '../product-list/product-list.component';
-import {CartPageComponent} from '../cart-page/cart-page.component';
+import {MainPageComponent} from '../components/main-page/main-page.component';
+import {ProfilePageComponent} from '../components/profile-page/profile-page.component';
+import {ProductsPageComponent} from '../components/products-page/products-page.component';
+import {CartPageComponent} from '../components/cart-page/cart-page.component';
+import {ProductEditComponent} from '../components/product-edit/product-edit.component';
+import {OrdersPageComponent} from '../components/orders-page/orders-page.component';
 
 const routes: Routes = [
   {
@@ -21,12 +23,20 @@ const routes: Routes = [
   },
   {
     path: 'products',
-    component: ProductListComponent
+    component: ProductsPageComponent
   },
   {
     path: 'cart',
     component: CartPageComponent
-  }
+  },
+  {
+    path: 'product',
+    component: ProductEditComponent
+  },
+  {
+    path: 'orders',
+    component: OrdersPageComponent
+  },
 ];
 
 @NgModule({

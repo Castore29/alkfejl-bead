@@ -1,0 +1,8 @@
+<h6 style="text-align: center; font-weight: bold">Termékek:</h6>
+<mat-list class="product-list">
+  <mat-list-item *ngFor="let product of products" (click)="openModal(product)">
+    <mat-icon mat-list-icon color="primary">label</mat-icon>
+    <h5 mat-line>{{product.productName}}</h5>
+    <p mat-line>{{product.itemNumber}}</p>
+  </mat-list-item>
+</mat-list>

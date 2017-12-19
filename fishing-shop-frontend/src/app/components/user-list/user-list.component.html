@@ -1,0 +1,11 @@
+<div class="d-flex flex-column align-items-center">
+  <h2 class="bold-center">A felhasználók listája:</h2>
+  <mat-list>
+    <mat-list-item *ngFor="let user of users" (click)="select(user)">
+      <mat-icon mat-list-icon color="primary">account_circle</mat-icon>
+      <h4 mat-line>{{user.userName}}</h4>
+      <p mat-line>{{user.email}}</p>
+    </mat-list-item>
+  </mat-list>
+</div>
+

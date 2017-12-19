@@ -1,0 +1,122 @@
+<mat-sidenav-container class="full-height">
+  <mat-sidenav #sidenav role="navigation">
+    <mat-list>
+      <mat-list-item (click)="sidenav.close()" style="font-weight: bold">
+        Menü
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button [matMenuTriggerFor]="catButton">
+          <mat-icon>list</mat-icon>
+          Kategóriák
+        </button>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button routerLink="/cart">
+          <mat-icon>shopping_cart</mat-icon>
+          Kosaram ({{orderService.cart.products.length}})
+        </button>
+      </mat-list-item>
+      <div *ngIf="!userService.loggedInUser">
+        <mat-list-item>
+          <button mat-button (click)="loginDialog()">
+            <mat-icon>account_circle</mat-icon>
+            Bejelentkezés
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button routerLink="/register">
+            <mat-icon>add</mat-icon>
+            Regisztráció
+          </button>
+        </mat-list-item>
+      </div>
+      <div *ngIf="userService.loggedInUser">
+        <mat-list-item>
+          <button mat-button routerLink="/profile">
+            <mat-icon>account_circle</mat-icon>
+            {{userService.loggedInUser.userName}}
+          </button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            Kijelentkezés
+          </button>
+        </mat-list-item>
+      </div>
+      <div *ngIf="userService.loggedInUser ? userService.loggedInUser.role == 'ADMIN' : false">
+        <mat-divider></mat-divider>
+        <mat-list-item>
+          <button mat-button routerLink="/product">Termékek kezelése</button>
+        </mat-list-item>
+        <mat-list-item>
+          <button mat-button routerLink="/orders">Rendelések kezelése</button>
+        </mat-list-item>
+      </div>
+    </mat-list>
+  </mat-sidenav>
+  <mat-toolbar color="primary" role="navigation" class="d-flex justify-content-around">
+    <button mat-button routerLink="/" style="font-weight: bold">
+      Horgászbolt
+    </button>
+    <div fxLayout="row" fxShow="false" fxShow.gt-sm>
+      <button mat-button [matMenuTriggerFor]="catButton">
+        <mat-icon>list</mat-icon>
+        Kategóriák
+      </button>
+      <button mat-button routerLink="/cart">
+        <mat-icon>shopping_cart</mat-icon>
+        Kosaram ({{orderService.cart.products.length}})
+      </button>
+      <div *ngIf="!userService.loggedInUser">
+        <button mat-button (click)="loginDialog()">
+          <mat-icon>account_circle</mat-icon>
+          Bejelentkezés
+        </button>
+        <button mat-button routerLink="/register">
+          <mat-icon>add</mat-icon>
+          Regisztráció
+        </button>
+      </div>
+      <div *ngIf="userService.loggedInUser">
+        <button mat-button routerLink="/profile">
+          <mat-icon>account_circle</mat-icon>
+          {{userService.loggedInUser.userName}}
+        </button>
+        <button mat-button (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          Kijelentkezés
+        </button>
+      </div>
+      <div *ngIf="userService.loggedInUser ? userService.loggedInUser.role == 'ADMIN' : false"
+           class="d-flex left-border">
+        <button mat-button routerLink="/product">Termékek kezelése</button>
+        <button mat-button routerLink="/orders">Rendelések kezelése</button>
+      </div>
+    </div>
+    <button mat-icon-button (click)="sidenav.open()" fxHide="false" fxHide.gt-sm>
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-menu [overlapTrigger]="false" #catButton="matMenu">
+    <ng-container *ngFor="let category of categories">
+      <label mat-menu-item [matMenuTriggerFor]="subCatButton" (mouseover)="selectedCategory=category">
+        {{category}}
+      </label>
+      <mat-menu [overlapTrigger]="false" #subCatButton="matMenu">
+        <ng-container *ngFor="let subCategory of subCategories[selectedCategory]">
+          <button mat-menu-item (click)="goToProducts(subCategory, sidenav)">
+            {{subCategory}}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </ng-container>
+  </mat-menu>
+
+  <div class="container full-height full-width">
+
+    <router-outlet></router-outlet>
+
+  </div>
+</mat-sidenav-container>

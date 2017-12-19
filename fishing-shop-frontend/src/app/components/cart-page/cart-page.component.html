@@ -1,0 +1,40 @@
+<div class="d-flex flex-column justify-items-center align-items-center">
+  <h2 class="bold-center">Kosár tartalma</h2>
+  <div style="margin: 5%" *ngIf="orderService.cart.products.length == 0">
+    Üres a kosár!
+  </div>
+  <div *ngIf="orderService.cart.products.length > 0">
+    <mat-list>
+      <mat-list-item *ngFor="let product of orderService.cart.products" (click)="openModal(product)">
+        <mat-icon mat-list-icon color="primary">label</mat-icon>
+        <h5 mat-line>{{product.productName}}</h5>
+        <p mat-line style="max-width: 250px">{{product.description}}</p>
+        <div mat-line>
+          <span [ngStyle]="product.discount ? {'text-decoration': 'line-through'} : {} ">
+            {{product.price | currency : "HUF" : 0}}
+          </span>
+          <span style="font-weight: bold; color: red" *ngIf="product.discount">
+          {{product.price * (100 - product.discount) / 100 | currency : "HUF" : 0}}
+          </span>
+        </div>
+        <button mat-icon-button color="warn" (click)="removeProduct(product)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <mat-divider></mat-divider>
+  <div style="padding: 5px" class="d-flex flex-row">
+    <h4 style="margin: 5px">Végösszeg:</h4>
+    <h4 style="margin: 5px">{{orderService.cart.total | currency : "HUF" : 0}}</h4>
+  </div>
+  <div style="margin: 2%" class="d-flex justify-content-center">
+    <button mat-raised-button color="primary" (click)="makeOrder()" [disabled]="orderService.cart.products.length == 0">
+      Rendelés elküldése
+    </button>
+    <button mat-raised-button color="warn" (click)="orderService.cart.products = []">
+      <mat-icon>remove_shopping_cart</mat-icon>
+      Kosár ürítése
+    </button>
+  </div>
+</div>

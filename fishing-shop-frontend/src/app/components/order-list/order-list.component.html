@@ -1,0 +1,13 @@
+<div class="d-flex flex-column align-items-center">
+  <h2 *ngIf="user" class="bold-center">{{user.userName}} rendelései:</h2>
+  <h2 *ngIf="!user" class="bold-center">Rendelések:</h2>
+  <mat-list>
+    <mat-list-item *ngFor="let order of orders" (click)="select(order)">
+      <mat-icon mat-list-icon color="primary">description</mat-icon>
+      <h4 mat-line>{{order.orderNumber}}</h4>
+      <p mat-line>{{order.status | status}}</p>
+    </mat-list-item>
+  </mat-list>
+</div>
+
+
